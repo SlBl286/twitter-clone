@@ -10,12 +10,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id              String    @id @default(uuid())
+  username        String?   @unique
+  name            String?
+  bio             String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  coverImage      String?
+  profileImage    String?
+  hashedPassword  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  followingIDs    String[]
+  hasNotification Boolean?
 
-model User{
-  id String @id @default(uuid()) 
-  username String? @unique
-  bio String?
-  email String? @unique
-  emailVerified DateTime?
+  post         Post[]
+  comments     Comment[]
+  notification Notification[]
+}
 
+model Post {
+  id        Int      @id @default(autoincrement())
+  body      String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likedIds  String[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comment Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  postId    Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  body      String
+  userId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

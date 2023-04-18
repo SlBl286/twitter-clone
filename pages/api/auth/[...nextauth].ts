@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-
 import prisma from "@/libs/prismadb";
 
 export default NextAuth({
@@ -14,8 +13,7 @@ export default NextAuth({
         email: { label: "email", type: "text" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials) {
-       
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("email error");
         }
@@ -43,12 +41,20 @@ export default NextAuth({
       },
     }),
   ],
-  debug: process.env.NODE_ENV === "development",
+  // debug: process.env.NODE_ENV === "development",
+  callbacks: {
+    session: ({ session, token }) => {
+      if (token) {
+      }
+      return session;
+    },
+  },
   session: {
     strategy: "jwt",
   },
+  secret: "secret",
   jwt: {
-    secret: process.env.NEXTAUTH_JWT_SECRET,
+    secret: "jwt_secret",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  
 });

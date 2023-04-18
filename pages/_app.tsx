@@ -5,6 +5,7 @@ import LoginModal from "@/components/Modal/LoginModal";
 import RegisterModal from "@/components/Modal/RegisterModal";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import EditModal from "@/components/Modal/EditModal";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -12,6 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Toaster />
       <RegisterModal />
       <LoginModal />
+      <EditModal />
       <Layout>
         <Component {...pageProps} />
       </Layout>

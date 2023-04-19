@@ -8,6 +8,7 @@ import useEditModal from "@/hooks/useEditModal";
 import LoginModal from "@/components/Modal/LoginModal";
 import useLoginModal from "@/hooks/useLoginModal";
 import axios from "axios";
+import useFollow from "@/hooks/useFollow";
 interface UserBioProps {
   userId: string;
 }
@@ -17,6 +18,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
   const { data: currentUser } = useCurrentUser();
   const { data: fetchedUser } = useUser(userId);
 
+  const { isFollowing, toggleFollow } = useFollow(userId);
   const createdAt = useMemo(() => {
     if (!fetchedUser?.createdAt) {
       return null;
@@ -28,21 +30,18 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
   const editOnClick = useCallback(() => {
     editModal.onOpen();
   }, [editModal]);
-
-  const followOnClick = useCallback(() => {
-    if (!currentUser) {
-      loginModal.onOpen();
-    }else{
-        axios.post("follow",{})
-    }
-  }, [loginModal]);
   return (
     <div className="border-b-[1px] border-neutral-800 pb-4">
       <div className="flex justify-end p-2">
         {currentUser?.id === userId ? (
           <Button secondary label="Edit" onClick={editOnClick} />
         ) : (
-          <Button onClick={followOnClick} label="Follow" secondary />
+          <Button
+            onClick={toggleFollow}
+            label={isFollowing ? "Unfollow" : "Follow"}
+            secondary={!isFollowing}
+            outline={isFollowing}
+          />
         )}
       </div>
       <div className="mt-8 px-4">
